@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script id="tiny-performance-profile">
+
+window.TINY_PERF = (() => {
+  const qs = new URLSearchParams(location.search);
+  const quality = qs.get('tinyfx');
+  const touch = matchMedia('(pointer:coarse)').matches;
+  const constrained = touch || (navigator.deviceMemory && navigator.deviceMemory <= 6)
+     || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (touch && matchMedia('(max-width:900px)').matches && !/Windows|Macintosh|X11/i.test(navigator.userAgent));
+  const lite = mobile || (quality === 'full' ? false : quality === 'lite' ? true : !!constrained);
+  document.documentElement.classList.toggle('tiny-lite', lite);
+  document.documentElement.classList.toggle('tiny-mobile', mobile);
+  const maxCanvasPixels = mobile ? 365000 : lite ? 1250000 : 2100000;
+  function canvasDpr(w,h,maxDpr=1.6) {
+    return Math.max(mobile ? .48 : .55, Math.min(devicePixelRatio || 1,
+      mobile ? .84 : lite ? 1.15 : maxDpr,
+      Math.sqrt(maxCanvasPixels / Math.max(1, w*h))));
+  }
+  return { lite, mobile, canvasDpr, ambientFps: mobile ? 60 : lite ? 24 : 60,
+    roverFps:mobile ? 45 : lite ? 30 : 60,
+    orbitFps:mobile ? 45 : lite ? 24 : 60,
+    leafFps:mobile ? 60 : lite ? 24 : 60 };
+
+})();
+</script>
+
+    <meta charset="UTF-8">
+    <title>Gửi Mẹ Yêu - Ngày 20/10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
+            font-family: 'Courier Prime', monospace;
+            position: relative;
+        }
+
+
+        
+        #tiny-sky {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.6s ease-in-out, visibility 1.6s;
+        }
+        #tiny-sky.hien-thi {
+            opacity: 1;
+            visibility: visible;
+        }
+        #tiny-sky:not(.hien-thi) .tiny-star,
+        #tiny-sky:not(.hien-thi) .tiny-meteor {
+            animation-play-state: paused;
+        }
+        .tiny-star {
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px 1px rgba(220, 244, 255, .65);
+            animation: tinyTwinkle var(--twinkle) ease-in-out var(--delay) infinite alternate;
+        }
+        @keyframes tinyTwinkle {
+            from { opacity: .18; transform: scale(.65); }
+            to { opacity: .95; transform: scale(1.25); }
+        }
+        
+        .tiny-meteor {
+            position: absolute;
+            width: clamp(62px, 10vw, 135px);
+            height: 2px;
+            opacity: 0;
+            background: linear-gradient(to right,
+                rgba(255,255,255,.98) 0%,
+                rgba(198,235,255,.86) 13%,
+                rgba(130,200,255,.34) 52%,
+                rgba(130,200,255,0) 100%);
+            border-radius: 99px;
+            box-shadow: 0 0 6px rgba(210,240,255,.70);
+            transform-origin: 0 50%;
+            transform: translate3d(0,0,0) rotate(var(--meteor-angle, -25deg));
+            will-change: transform, opacity;
+            animation: tinyMeteor var(--period) linear var(--meteor-delay) infinite;
+        }
+        .tiny-meteor::before {
+            content: '';
+            position: absolute;
+            left: -3px;
+            top: -2.5px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 8px 2px rgba(230,249,255,.90);
+        }
+        
+        @keyframes tinyMeteor {
+            0%   { opacity: 0;   transform: translate3d(0,0,0) rotate(var(--meteor-angle)); }
+            8%   { opacity: .70; transform: translate3d(var(--meteor-x08),var(--meteor-y08),0) rotate(var(--meteor-angle)); }
+            20%  { opacity: 1;   transform: translate3d(var(--meteor-x20),var(--meteor-y20),0) rotate(var(--meteor-angle)); }
+            36%  { opacity: .65; transform: translate3d(var(--meteor-x36),var(--meteor-y36),0) rotate(var(--meteor-angle)); }
+            53%  { opacity: 0;   transform: translate3d(var(--meteor-x53),var(--meteor-y53),0) rotate(var(--meteor-angle)); }
+            100% { opacity: 0;   transform: translate3d(var(--meteor-x100),var(--meteor-y100),0) rotate(var(--meteor-angle)); }
+        }
+
+        #pink-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.4) 0%, rgba(255, 20, 147, 0.1) 30%, transparent 70%);
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+            pointer-events: none;
+            z-index: 3; 
+        }
+
+        #pink-overlay.hien-thi {
+            opacity: 1;
+        }
+
+        :root { --anh-cao: 88vh; }
+
+        
+        #vang-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top,
+                rgba(255, 207, 83, .52) 0%,
+                rgba(255, 210, 93, .32) calc(var(--anh-cao) * .16),
+                rgba(255, 222, 132, .13) calc(var(--anh-cao) * .29),
+                rgba(255, 22
+      
